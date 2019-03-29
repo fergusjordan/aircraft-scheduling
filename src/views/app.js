@@ -40,7 +40,7 @@ class App extends React.Component {
 	// =============================================================================================
 	render() {
 
-		const { aircrafts, flights, selectedAircraft } = this.state;
+		const { date, aircrafts, flights, selectedAircraft } = this.state;
 
 		// GET FLIGHTS THAT HAVE BEEN SELECTED BY THIS CURRENT AIRCRAFT
 		const selectedFlights = flights.filter( flight => {
@@ -48,29 +48,33 @@ class App extends React.Component {
 		} );
 
 		// GET FLIGHTS THAT HAVENT BEEN SELECTED BY ANY AIRCRAFT
+		// NOTE: GUESSING HERE THAT THE FLIGHTS ARE ALL AVAILABLE FLIGHTS AND NOT ONES SPECIFICALLY AVAILABLE TO THIS FLIGHT
 		const unselectedFlights = flights.filter( flight => {
-
 			return !aircrafts.find( aircraft => aircraft.flights.indexOf( flight.ident ) > -1 );
 		} );
 
-		console.log( selectedFlights, unselectedFlights );
+		return <div className="flight-controller-container">
 
-		// TODO: FILTER FLIGHTS TO REJECT ONES ALREADY SELECTED
+			<p className="flight-controller-container__date">{ new Date( date ).formatDate() }</p>
 
-		return <div className="flight-controller">
+			<div className="flight-controller">
 
-			<AircraftsView
-				aircrafts={ aircrafts }
-				selected={ selectedAircraft }
-				changeAircraft={ changedAircraft => { this.changeAircraft( changedAircraft ) } }
-			/>
+				<AircraftsView
+					aircrafts={ aircrafts }
+					selected={ selectedAircraft }
+					changeAircraft={ changedAircraft => { this.changeAircraft( changedAircraft ) } }
+				/>
 
-			<AircraftsRotationView />
+				<AircraftsRotationView
+					selectedAircraft={ selectedAircraft }
+					flights={ selectedFlights }
+				/>
 
-			<FlightsView
-				flights={ flights }
-			/>
+				<FlightsView
+					flights={ unselectedFlights }
+				/>
 
+			</div>
 		</div>;
 	}
 

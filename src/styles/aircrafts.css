@@ -1,0 +1,9 @@
+.aircraft {
+    background: rgba( 0, 0, 0, 0.03 );
+    padding: 10px;
+    cursor: pointer;
+}
+
+.aircraft_selected {
+    border-right: 5px solid #000;
+}

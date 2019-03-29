@@ -22,6 +22,9 @@ class Flights extends React.Component {
 
 		const { flights } = this.state;
 
+		// SORT BY EARLIEST DEPARTURE TIME
+		flights.sort( ( a, b ) => a.departuretime - b.departuretime );
+
 		return <div className="flights">
 
 			<h1>Flights</h1>
@@ -39,14 +42,14 @@ class Flights extends React.Component {
 								<p>{ id }</p>
 							</div>
 
-							<div className="flight__info">
+							<div className="flight__details">
 
-								<div className="flight__origin">
+								<div className="flight__detail flight__detail_origin">
 									<small>{ flight.origin }</small>
 									<p>{ flight.readable_departure }</p>
 								</div>
 
-								<div className="flight__destination">
+								<div className="flight__detail flight__detail_destination">
 									<small>{ flight.destination }</small>
 									<p>{ flight.readable_arrival }</p>
 								</div>

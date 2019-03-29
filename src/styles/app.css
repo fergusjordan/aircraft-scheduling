@@ -1,3 +1,7 @@
+.flight-controller-container__date {
+    text-align: center;
+}
+
 .flight-controller {
     display: flex;
     flex-wrap: nowrap;
@@ -13,6 +17,11 @@
     flex: 1 0 25%;
     border: 1px solid #DDD;
     border-radius: 5px;
+}
+
+.aircrafts h1,
+.flights h1 {
+    text-align: center;
 }
 
 .aircraft-rotation {
