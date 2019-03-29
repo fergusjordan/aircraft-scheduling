@@ -33,7 +33,7 @@ class App extends React.Component {
 			aircrafts: aircrafts,
 			flights: Flights,
 			selectedAircraft: aircrafts[ 0 ] // DEFAULT TO SELECT FIRST AIRCRAFT
-		}
+		};
 	}
 
 
@@ -45,16 +45,47 @@ class App extends React.Component {
 		// SORT BY EARLIEST DEPARTURE TIME
 		flights.sort( ( a, b ) => a.departuretime - b.departuretime );
 
-		// GET FLIGHTS THAT HAVE BEEN SELECTED BY THIS CURRENT AIRCRAFT
-		const selectedFlights = flights.filter( flight => {
-			return selectedAircraft.flights.indexOf( flight.ident ) > -1;
-		} );
+		const selectedFlights = selectedAircraft.flights;
+
+		selectedFlights.sort( ( a, b ) => a.departuretime - b.departuretime );
 
 		// GET FLIGHTS THAT HAVENT BEEN SELECTED BY ANY AIRCRAFT
-		// NOTE: GUESSING HERE THAT THE FLIGHTS ARE ALL AVAILABLE FLIGHTS AND NOT ONES SPECIFICALLY AVAILABLE TO THIS FLIGHT
-		const unselectedFlights = flights.filter( flight => {
-			return !aircrafts.find( aircraft => aircraft.flights.indexOf( flight.ident ) > -1 );
+		let unselectedFlights = flights.filter( flight => {
+			return !selectedFlights.find( selectedFlight => flight.ident === selectedFlight.ident );
 		} );
+
+		// FILTER FLIGHTS INTO AN ARRAY WITH ONES THAT CAN BE SELECTED BASED ON ALREADY SELECTED FLIGHTS
+		let selectableFlights = [];
+
+		// FILTER UNSELECTED FLIGHTS BY WHICH ONES WILL BE AVAILABLE BASED ON WHATS ALREADY SELECTED
+		if ( selectedFlights.length ) {
+
+				// LOOP THROUGH UNSELECTED FLIGHTS TO FIND ONES THAT COULD BE SELECTED
+				unselectedFlights.forEach( flight => {
+
+					// IF WE ALREADY MARKED THIS FLIGHT AS SELECTABLE › DONT CONTINUE
+					if ( selectableFlights.find( selectable => flight.ident === selectable.ident ) ) return;
+
+					selectedFlights.forEach( ( selectedFlight, index ) => {
+
+						// CHECK INITIAL AVAILABILITY
+						let available = this.flightAvailability( flight, selectedFlight );
+
+						// IF THIS FLIGHT IS AVAILABLE › CHECK WE DONT CONFLICT WITH A PREVIOUS FLIGHT
+						if ( available && index > 0 )
+							available = this.flightAvailability( flight, selectedFlights[ index - 1 ] );
+
+						// CHECK AGAINST NEXT
+						else if ( available && index < selectedFlights.length - 1 )
+							available = this.flightAvailability( flight, selectedFlights[ index + 1 ] );
+
+						// IF STILL AVAILABLE › PUSH TO SELECTABLE ARRAY
+						if ( available ) selectableFlights.push( flight );
+					});
+				});
+
+		// IF NO SELECTED FLIGHTS › WE CAN SELECT ANY THAT ARENT SELECTED YET
+		} else selectableFlights = unselectedFlights;
 
 		return <div className="flight-controller-container">
 
@@ -70,12 +101,12 @@ class App extends React.Component {
 
 				<AircraftsRotationView
 					selectedAircraft={ selectedAircraft }
-					flights={ selectedFlights }
+					flights={ selectedAircraft.flights }
 					removeFlight={ selectedFlight => { this.updateFlights( selectedFlight ) } }
 				/>
 
 				<FlightsView
-					flights={ unselectedFlights }
+					flights={ selectableFlights }
 					selectFlight={ selectedFlight => { this.updateFlights( selectedFlight ) } }
 				/>
 
@@ -113,7 +144,25 @@ class App extends React.Component {
 		// IMMUTABLY UPDATE AIRCRAFT
 		selectedAircraft = { ...selectedAircraft, flights: flights };
 
-		this.setState({ selectedAircraft });
+
+	flightAvailability( flight, selectedFlight ) {
+
+		const roundTrip = selectedFlight.origin === flight.destination && selectedFlight.destination === flight.origin,
+			  timeBeforeDeparture = ( flight.arrivaltime + ( 60 * 40 ) < selectedFlight.departuretime ),
+			  timeAfterArrival = ( selectedFlight.arrivaltime + ( 60 * 40 ) < flight.departuretime );
+
+		// IF WE HAVE A ROUND TRIP › CHECK AGAINST ARRIVAL OR DEPARTURE TIME
+		if ( roundTrip ) return timeBeforeDeparture || timeAfterArrival;
+
+		// IF FLIGHT IS LANDING AT ORIGIN OF SELECTED FLIGHT › CHECK WE HAVE TIME TO FLY BEFORE SELECTED FLIGHT DEPARTURE
+		else if ( selectedFlight.origin === flight.destination )
+			return timeBeforeDeparture;
+
+		// ELSE IF SELECTED FLIGHT WILL LAND AT ORIGIN OF THIS FLIGHT › CHECK THE FLIGHT DEPARTS AFTER WE LAND
+		else if ( selectedFlight.destination === flight.origin )
+			return timeAfterArrival;
+
+		return false;
 	}
 }
 
