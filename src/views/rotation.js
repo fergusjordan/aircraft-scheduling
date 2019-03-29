@@ -19,6 +19,8 @@ class AircraftRotation extends React.Component {
 		const { selectedAircraft, flights } = this.props,
 			  dayDuration = 60 * 60 * 24;
 
+		flights.sort( ( a, b ) => a.departuretime - b.departuretime );
+
 		return <div className="aircraft-rotation">
 
 			<div className="aircraft-rotation__header">

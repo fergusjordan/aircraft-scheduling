@@ -28,9 +28,19 @@ class Aircrafts extends React.Component {
 
 					const id = aircraft.ident;
 
+					let coverage = 0;
+
+					aircraft.flights.map( flight => {
+						coverage = coverage + ( flight.arrivaltime - flight.departuretime + ( 40 * 60 ) );
+					});
+
+					// DIVIDE COVERAGE IN SECONDS BY DURATION OF DAY
+					coverage /= 60 * 60 * 24;
+
 					return (
 						<div key={ id } data-aircraft={ id } className={ 'aircraft' + ( id === selected.ident ? ' aircraft_selected' : '' ) } onClick={ this.changeAircraft.bind( this ) }>
 							<p>{ id }</p>
+							<p>({ Math.round( coverage * 100 ).toString() }%)</p>
 						</div>
 					);
 
