@@ -131,18 +131,30 @@ class App extends React.Component {
 	// =============================================================================================
 	updateFlights( id ) {
 
-		let { selectedAircraft } = this.state;
+		let { selectedAircraft, flights, aircrafts } = this.state,
+			aircraftIndex = aircrafts.findIndex( aircraft => aircraft.ident === selectedAircraft.ident ),
+			flightIndex = selectedAircraft.flights.findIndex( flight => flight.ident === id ),
+			flight = flights.find( flight => flight.ident === id );
 
-		let flights = selectedAircraft.flights;
+		let selectedFlights = selectedAircraft.flights.slice();
 
 		// AIRCRAFT DIDNT HAVE THIS FLIGHT YET › ADD IT
-		if ( flights.indexOf( id ) < 0 ) flights.push( id );
+		if ( flightIndex < 0 ) selectedFlights.push( flight );
 
 		// ELSE › AIRCRAFT ALREADY HAD THIS FLIGHT SELECTED › REMOVE IT
-		else flights.splice( flights.indexOf( id ), 1 );
+		else selectedFlights.splice( flightIndex, 1 );
 
 		// IMMUTABLY UPDATE AIRCRAFT
-		selectedAircraft = { ...selectedAircraft, flights: flights };
+		selectedAircraft = { ...selectedAircraft, flights: selectedFlights };
+
+		// UPDATE SELECTED AIRCRAFT IN AIRCRAFTS ARRAY
+		aircrafts.slice();
+
+		// INSERT UPDATED SELECTED AIRCRAFT INTO ARRAY
+		aircrafts.splice( aircraftIndex, 1, selectedAircraft );
+
+		this.setState({ selectedAircraft, aircrafts });
+	}
 
 
 	flightAvailability( flight, selectedFlight ) {
