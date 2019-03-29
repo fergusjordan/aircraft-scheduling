@@ -1,0 +1,20 @@
+.flight-controller {
+    display: flex;
+    flex-wrap: nowrap;
+    padding: 25px;
+}
+
+.flight-controller > div {
+    padding: 25px;
+}
+
+.aircrafts,
+.flights {
+    flex: 1 0 25%;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+}
+
+.aircraft-rotation {
+    flex: 1 0 50%;
+}
