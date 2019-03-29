@@ -18,11 +18,6 @@ class Aircrafts extends React.Component {
 
 		const { aircrafts, selected } = this.props;
 
-		// base: "EGKK"
-		// economySeats: 186
-		// ident: "GABCD"
-		// type: "A320"
-
 		return <div className="aircrafts">
 
 			<h1>Aircrafts</h1>

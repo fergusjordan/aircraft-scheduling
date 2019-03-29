@@ -19,8 +19,6 @@ class AircraftRotation extends React.Component {
 		const { selectedAircraft, flights } = this.props,
 			  dayDuration = 60 * 60 * 24;
 
-		console.log( 'RENDER SELECTED FLIGHTS:', flights );
-
 		return <div className="aircraft-rotation">
 
 			<div className="aircraft-rotation__header">
@@ -74,18 +72,18 @@ class AircraftRotation extends React.Component {
 
 						const id = flight.ident,
 							  start = flight.departuretime / dayDuration,
-							  end = flight.arrivaltime / dayDuration,
-							  turnaround = ( flight.arrivaltime + ( 40 * 60 ) ) / dayDuration;
+							  end = ( flight.arrivaltime + ( 40 * 60 ) ) / dayDuration; // ADD 40 MINUTES TO END OF FLIGHT TO ACCOUNT FOR TURNAROUND
 
-						console.log( start, end );
+						console.log( ( 40 * 60 ), ( end - start ), flight.arrivaltime, flight.departuretime );
 
 						return (
 							<div key={ id } className="aircraft-timeline__track-block" style={ {
 								left: start * 100 + '%',
-								width: ( turnaround * 100 ) - ( start * 100 ) + '%'
+								width: ( end * 100 ) - ( start * 100 ) + '%'
 							} }>
+								{/* ADD A BLOCK FOR TURNAROUND THAT LASTS 40 MINUTES */}
 								<div className="aircraft-timeline__track-turnaround" style={ {
-									width: ( turnaround * 100 ) + '%'
+									width: ( ( 40 * 60 / dayDuration ) / ( end - start ) * 100 ) + '%'
 								} } />
 							</div>
 						);
@@ -104,7 +102,7 @@ class AircraftRotation extends React.Component {
 
 		const flight = e.currentTarget.dataset.flight;
 
-		this.props.selectFlight( flight );
+		this.props.removeFlight( flight );
 	}
 }
 
