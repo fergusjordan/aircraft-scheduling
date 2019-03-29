@@ -16,7 +16,10 @@ class AircraftRotation extends React.Component {
 	// =============================================================================================
 	render() {
 
-		const { selectedAircraft, flights } = this.props;
+		const { selectedAircraft, flights } = this.props,
+			  dayDuration = 60 * 60 * 24;
+
+		console.log( 'RENDER SELECTED FLIGHTS:', flights );
 
 		return <div className="aircraft-rotation">
 
@@ -55,6 +58,41 @@ class AircraftRotation extends React.Component {
 					);
 
 				} )}
+
+			</div>
+
+			<div className="aircraft-timeline">
+
+				<div className="aircraft-timeline__labels">
+					<p>00:00</p>
+					<p>12:00</p>
+				</div>
+
+				<div className="aircraft-timeline__track">
+
+					{ flights.map( ( flight ) => {
+
+						const id = flight.ident,
+							  start = flight.departuretime / dayDuration,
+							  end = flight.arrivaltime / dayDuration,
+							  turnaround = ( flight.arrivaltime + ( 40 * 60 ) ) / dayDuration;
+
+						console.log( start, end );
+
+						return (
+							<div key={ id } className="aircraft-timeline__track-block" style={ {
+								left: start * 100 + '%',
+								width: ( turnaround * 100 ) - ( start * 100 ) + '%'
+							} }>
+								<div className="aircraft-timeline__track-turnaround" style={ {
+									width: ( turnaround * 100 ) + '%'
+								} } />
+							</div>
+						);
+
+					} )}
+
+				</div>
 
 			</div>
 
