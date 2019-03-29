@@ -10,20 +10,13 @@ class Flights extends React.Component {
 	constructor( props ) {
 
 		super( props );
-
-		this.state = {
-			flights: props.flights
-		}
 	}
 
 
 	// =============================================================================================
 	render() {
 
-		const { flights } = this.state;
-
-		// SORT BY EARLIEST DEPARTURE TIME
-		flights.sort( ( a, b ) => a.departuretime - b.departuretime );
+		const { flights } = this.props;
 
 		return <div className="flights">
 
@@ -66,9 +59,11 @@ class Flights extends React.Component {
 
 
 	// =============================================================================================
-	selectFlight() {
+	selectFlight( e ) {
 
+		const flight = e.currentTarget.dataset.flight;
 
+		this.props.selectFlight( flight );
 	}
 }
 

@@ -42,6 +42,9 @@ class App extends React.Component {
 
 		const { date, aircrafts, flights, selectedAircraft } = this.state;
 
+		// SORT BY EARLIEST DEPARTURE TIME
+		flights.sort( ( a, b ) => a.departuretime - b.departuretime );
+
 		// GET FLIGHTS THAT HAVE BEEN SELECTED BY THIS CURRENT AIRCRAFT
 		const selectedFlights = flights.filter( flight => {
 			return selectedAircraft.flights.indexOf( flight.ident ) > -1;
@@ -68,10 +71,12 @@ class App extends React.Component {
 				<AircraftsRotationView
 					selectedAircraft={ selectedAircraft }
 					flights={ selectedFlights }
+					removeFlight={ selectedFlight => { this.updateFlights( selectedFlight ) } }
 				/>
 
 				<FlightsView
 					flights={ unselectedFlights }
+					selectFlight={ selectedFlight => { this.updateFlights( selectedFlight ) } }
 				/>
 
 			</div>
@@ -89,6 +94,26 @@ class App extends React.Component {
 		this.setState( prevState => ({
 			selectedAircraft: aircraft
 		}) );
+	}
+
+
+	// =============================================================================================
+	updateFlights( id ) {
+
+		let { selectedAircraft } = this.state;
+
+		let flights = selectedAircraft.flights;
+
+		// AIRCRAFT DIDNT HAVE THIS FLIGHT YET › ADD IT
+		if ( flights.indexOf( id ) < 0 ) flights.push( id );
+
+		// ELSE › AIRCRAFT ALREADY HAD THIS FLIGHT SELECTED › REMOVE IT
+		else flights.splice( flights.indexOf( id ), 1 );
+
+		// IMMUTABLY UPDATE AIRCRAFT
+		selectedAircraft = { ...selectedAircraft, flights: flights };
+
+		this.setState({ selectedAircraft });
 	}
 }
 
