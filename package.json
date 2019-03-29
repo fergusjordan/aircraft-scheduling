@@ -24,7 +24,7 @@
     "webpack-dev-server": "^2.11.2"
   },
   "scripts": {
-    "start": "npm run build && NODE_ENV=dev webpack-dev-serwver --content-base dist/ --inline --open",
+    "start": "npm run build && NODE_ENV=dev webpack-dev-server --content-base dist/ --inline --open",
     "build": "rm -rf ./dist && mkdir -p dist && cp src/index.html dist/index.html && NODE_ENV=dev webpack -d",
     "build:prod": "rm -rf ./dist && mkdir -p dist && cp src/index.html dist/index.html && NODE_ENV=production webpack -p"
   },

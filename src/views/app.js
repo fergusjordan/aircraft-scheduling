@@ -87,6 +87,11 @@ class App extends React.Component {
 		// IF NO SELECTED FLIGHTS › WE CAN SELECT ANY THAT ARENT SELECTED YET
 		} else selectableFlights = unselectedFlights;
 
+		// NO EXAMPLES IN THE JSON GIVEN, BUT ONLY ALLOW FLIGHTS WHERE ARRIVAL TIME IS GREATER THAN DEPARTURE TIME (SO NONE ROLL OVER PAST MIDNIGHT)
+		selectableFlights = selectableFlights.filter( flight => {
+			return flight.arrivaltime > flight.departuretime;
+		});
+
 		return <div className="flight-controller-container">
 
 			<p className="flight-controller-container__date">{ new Date( date ).formatDate() }</p>

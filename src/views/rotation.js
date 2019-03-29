@@ -76,8 +76,6 @@ class AircraftRotation extends React.Component {
 							  start = flight.departuretime / dayDuration,
 							  end = ( flight.arrivaltime + ( 40 * 60 ) ) / dayDuration; // ADD 40 MINUTES TO END OF FLIGHT TO ACCOUNT FOR TURNAROUND
 
-						console.log( ( 40 * 60 ), ( end - start ), flight.arrivaltime, flight.departuretime );
-
 						return (
 							<div key={ id } className="aircraft-timeline__track-block" style={ {
 								left: start * 100 + '%',
