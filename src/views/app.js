@@ -10,7 +10,6 @@ import Flights from '../flights.js';
 import Axios from '../../node_modules/axios/dist/axios.min';
 
 import '../styles/app.css';
-import aircrafts from "../aircrafts";
 
 // =================================================================================================
 class App extends React.Component {
